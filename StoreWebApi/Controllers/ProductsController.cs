@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreWeb.Core.Dtos.Products;
+using StoreWeb.Core.Helper;
 using StoreWeb.Core.Services.Contract;
+using StoreWeb.Core.Specifications.Products;
 
 namespace StoreWebApi.Controllers
 {
@@ -17,10 +20,11 @@ namespace StoreWebApi.Controllers
 
 
         [HttpGet] // BaseUrl/api/Products
-        public async Task<IActionResult> GetAllProducts() // EndPoint
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecParams productSpec ) // EndPoint
         {
-            var result = await _productService.GetAllProductAsync();
+            var result = await _productService.GetAllProductAsync(productSpec);
 
+            //return Ok(new PaginationResponse<ProductDto>(productSpec.PageSize,productSpec.PageIndex,0,result));
             return Ok(result);
 
         }
@@ -49,7 +53,7 @@ namespace StoreWebApi.Controllers
 
 
 
-        [HttpGet("id")] // BaseUrl/api/Products
+        [HttpGet("{id}")] // BaseUrl/api/Products
         public async Task<IActionResult> GetProductById(int? id) // EndPoint
         {
             if (id is null) return BadRequest("Invalid id !!");

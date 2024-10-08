@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreWeb.Core.Entities;
 using StoreWeb.Core.Repositories.Contract;
+using StoreWeb.Core.Specifications;
 using StoreWeb.Repository.Data.Contexts;
+using StoreWeb.Repository.Specifications_Evaluator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,7 @@ namespace StoreWeb.Repository.Repositories
             if (typeof(TEntity) == typeof(Product))
             {
                 return (IEnumerable < TEntity >) await _context.Products.Include(P=>P.Brand).Include(P=>P.Type).ToListAsync();
-
+                
             }
 
 
@@ -59,6 +61,25 @@ namespace StoreWeb.Repository.Repositories
             _context.Remove(entity);
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
 
+        public async Task<TEntity> GetWithSpecAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
+
+        }
+    
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity, TKey> spec)
+        {
+            return SpecificationsEvaluator<TEntity, TKey>.GetQuery(_context.Set<TEntity>(), spec);
+        }
+
+        public async Task<int> CountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
     }
 }

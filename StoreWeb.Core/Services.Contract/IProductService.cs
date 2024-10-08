@@ -1,4 +1,6 @@
 ﻿using StoreWeb.Core.Dtos.Products;
+using StoreWeb.Core.Helper;
+using StoreWeb.Core.Specifications.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace StoreWeb.Core.Services.Contract
 {
-    public interface IProductService
+    public interface IProductService 
     {
 
-        Task<IEnumerable<ProductDto>>GetAllProductAsync();
+        Task<PaginationResponse<ProductDto>>GetAllProductAsync(ProductSpecParams productSpec );
         Task<IEnumerable<TypeBrandDto>>GetAllTypesAsync();
         Task<IEnumerable<TypeBrandDto>>GetAllBrandsAsync();
 

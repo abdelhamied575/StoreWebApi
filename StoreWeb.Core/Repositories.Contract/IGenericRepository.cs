@@ -1,4 +1,5 @@
 ﻿using StoreWeb.Core.Entities;
+using StoreWeb.Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,13 @@ namespace StoreWeb.Core.Repositories.Contract
         Task<IEnumerable<TEntity>> GetAllAsync();
 
         Task<TEntity>GetAsync(TKey id);
+        Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity,TKey> spec);
+
+        Task<TEntity>GetWithSpecAsync(ISpecifications<TEntity, TKey> spec);
 
         Task AddAsync(TEntity entity);
+
+        Task<int> CountAsync(ISpecifications<TEntity,TKey> spec);
 
         void Update(TEntity entity);
 
