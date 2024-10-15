@@ -53,7 +53,7 @@ namespace StoreWebApi.Controllers
 
 
 
-        [HttpGet("{id}")] // BaseUrl/api/Products
+        [HttpGet("{id}")] // BaseUrl/api/Products/1
         public async Task<IActionResult> GetProductById(int? id) // EndPoint
         {
             if (id is null) return BadRequest("Invalid id !!");
