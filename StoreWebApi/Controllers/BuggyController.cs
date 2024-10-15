@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreWeb.Repository.Data.Contexts;
+using StoreWebApi.Errors;
 
 namespace StoreWebApi.Controllers
 {
@@ -20,7 +21,7 @@ namespace StoreWebApi.Controllers
         {
             var brand= await _context.Brands.FindAsync(100);
 
-            if (brand is null) return NotFound();
+            if (brand is null) return NotFound(new ApiErrorResponse(404,"Brand With Id : 100 Is Not Found"));
 
             return Ok(brand);
 
@@ -41,21 +42,21 @@ namespace StoreWebApi.Controllers
         [HttpGet("badrequest")] // Get : /api/Buggy/badrequest
         public async Task<IActionResult> GetBadRequestError()
         {
-            return BadRequest();
+            return BadRequest(new ApiErrorResponse(400));
 
         }
 
          [HttpGet("badrequest/{id}")] // Get : /api/Buggy/badrequest/ahmed
         public async Task<IActionResult> GetBadRequestError(int id) // Validation Error
         {
-            return Ok();
+            return Ok(new ApiErrorResponse(400));
 
         }
 
          [HttpGet("unathorized")] // Get : /api/Buggy/unathorized
         public async Task<IActionResult> GetUnathorizedError() // Validation Error
         {
-            return Unauthorized();
+            return Unauthorized(new ApiErrorResponse(401));
 
         }
 
