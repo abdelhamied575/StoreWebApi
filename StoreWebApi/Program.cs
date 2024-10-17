@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StoreWeb.Core;
 using StoreWeb.Core.Mapping.Products;
@@ -7,6 +9,7 @@ using StoreWeb.Repository;
 using StoreWeb.Repository.Data;
 using StoreWeb.Repository.Data.Contexts;
 using StoreWeb.Services.Services.Products;
+using StoreWebApi.Errors;
 
 namespace StoreWebApi
 {
@@ -34,6 +37,26 @@ namespace StoreWebApi
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile(builder.Configuration)));
 
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (ActionContext =>
+                {
+                    var errors = ActionContext.ModelState.Where(P => P.Value.Errors.Count() > 0)
+                                            .SelectMany(P => P.Value.Errors)
+                                            .Select(E => E.ErrorMessage)
+                                            .ToArray();
+
+                    var response = new ApiValidationErrorResponse()
+                    {
+
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                    //return BadRequest(response); // Error due to Not Inhert From ApiError Class
+                    
+                });
+            });
 
             var app = builder.Build();
 

@@ -49,7 +49,8 @@ namespace StoreWebApi.Controllers
          [HttpGet("badrequest/{id}")] // Get : /api/Buggy/badrequest/ahmed
         public async Task<IActionResult> GetBadRequestError(int id) // Validation Error
         {
-            return Ok(new ApiErrorResponse(400));
+
+            return Ok();
 
         }
 
