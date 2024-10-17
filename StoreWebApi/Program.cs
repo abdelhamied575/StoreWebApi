@@ -96,6 +96,7 @@ namespace StoreWebApi
 
             app.UseMiddleware<ExceptionMiddleWare>(); // Configure User-Defined MiddleWare
 
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
 
             app.MapControllers();
 
