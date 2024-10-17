@@ -10,6 +10,7 @@ using StoreWeb.Repository.Data;
 using StoreWeb.Repository.Data.Contexts;
 using StoreWeb.Services.Services.Products;
 using StoreWebApi.Errors;
+using StoreWebApi.MiddleWares;
 
 namespace StoreWebApi
 {
@@ -92,6 +93,8 @@ namespace StoreWebApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionMiddleWare>(); // Configure User-Defined MiddleWare
 
 
             app.MapControllers();
