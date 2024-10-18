@@ -5,9 +5,8 @@ using StoreWebApi.Errors;
 
 namespace StoreWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BuggyController : ControllerBase
+    
+    public class BuggyController : BaseApiController
     {
         private readonly StoreDbContext _context;
 
