@@ -7,6 +7,10 @@ using StoreWeb.Services.Services.Products;
 using StoreWeb.Core.Mapping.Products;
 using Microsoft.AspNetCore.Mvc;
 using StoreWebApi.Errors;
+using StoreWeb.Core.Repositories.Contract;
+using StoreWeb.Repository.Repositories;
+using StackExchange.Redis;
+using StoreWeb.Core.Mapping.Basket;
 
 namespace StoreWebApi.Helper
 {
@@ -22,6 +26,7 @@ namespace StoreWebApi.Helper
             services.AddUserDefinendService();
             services.AddAutoMapperService(configuration);
             services.ConfigureInValidModelStateResponseService(configuration);
+            services.AddRedisService(configuration);
 
             return services;
 
@@ -62,7 +67,7 @@ namespace StoreWebApi.Helper
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IBasketRepository, BasketRepository>();
             return services;
 
         }
@@ -70,6 +75,7 @@ namespace StoreWebApi.Helper
         private static IServiceCollection AddAutoMapperService(this IServiceCollection services,IConfiguration configuration)
         {
             services.AddAutoMapper(M => M.AddProfile(new ProductProfile(configuration)));
+            services.AddAutoMapper(M => M.AddProfile(new BasketProfile()));
 
             return services;
 
@@ -100,6 +106,20 @@ namespace StoreWebApi.Helper
                 });
             });
 
+
+            return services;
+
+        }
+
+        private static IServiceCollection AddRedisService(this IServiceCollection services,IConfiguration configuration)
+        {
+
+
+            services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            {
+                var connection = configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
 
             return services;
 
