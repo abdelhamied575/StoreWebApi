@@ -4,6 +4,7 @@ using StoreWeb.Core.Dtos.Products;
 using StoreWeb.Core.Helper;
 using StoreWeb.Core.Services.Contract;
 using StoreWeb.Core.Specifications.Products;
+using StoreWebApi.Attributes;
 using StoreWebApi.Errors;
 
 namespace StoreWebApi.Controllers
@@ -21,8 +22,11 @@ namespace StoreWebApi.Controllers
 
         [ProducesResponseType(typeof(PaginationResponse<ProductDto>), StatusCodes.Status200OK)]
         [HttpGet] // BaseUrl/api/Products
+        [Cashed(100)]
         public async Task<ActionResult<PaginationResponse<ProductDto>>> GetAllProducts([FromQuery] ProductSpecParams productSpec ) // EndPoint
         {
+
+
             var result = await _productService.GetAllProductAsync(productSpec);
 
             //return Ok(new PaginationResponse<ProductDto>(productSpec.PageSize,productSpec.PageIndex,0,result));

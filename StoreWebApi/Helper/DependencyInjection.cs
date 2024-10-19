@@ -11,6 +11,7 @@ using StoreWeb.Core.Repositories.Contract;
 using StoreWeb.Repository.Repositories;
 using StackExchange.Redis;
 using StoreWeb.Core.Mapping.Basket;
+using StoreWeb.Services.Services.Cashes;
 
 namespace StoreWebApi.Helper
 {
@@ -68,6 +69,7 @@ namespace StoreWebApi.Helper
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<ICashService,CasheService>();
             return services;
 
         }
