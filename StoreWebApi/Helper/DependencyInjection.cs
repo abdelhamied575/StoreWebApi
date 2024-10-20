@@ -12,6 +12,9 @@ using StoreWeb.Repository.Repositories;
 using StackExchange.Redis;
 using StoreWeb.Core.Mapping.Basket;
 using StoreWeb.Services.Services.Cashes;
+using StoreWeb.Repository.Identity.Contexts;
+using StoreWeb.Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace StoreWebApi.Helper
 {
@@ -28,6 +31,7 @@ namespace StoreWebApi.Helper
             services.AddAutoMapperService(configuration);
             services.ConfigureInValidModelStateResponseService(configuration);
             services.AddRedisService(configuration);
+            services.AddIdentityService();
 
             return services;
 
@@ -57,6 +61,11 @@ namespace StoreWebApi.Helper
             services.AddDbContext<StoreDbContext>(option =>
             {
                 option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<StoreIdentityDbContext>(option =>
+            {
+                option.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
             });
 
 
@@ -127,7 +136,15 @@ namespace StoreWebApi.Helper
 
         }
 
-            
+        private static IServiceCollection AddIdentityService(this IServiceCollection services)
+        {
+            services.AddIdentity<AppUser,IdentityRole>()
+                    .AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+            return services;
+
+        }
+
 
 
     }

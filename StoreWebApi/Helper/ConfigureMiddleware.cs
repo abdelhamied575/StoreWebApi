@@ -2,6 +2,10 @@
 using StoreWeb.Repository.Data;
 using StoreWebApi.MiddleWares;
 using Microsoft.EntityFrameworkCore;
+using StoreWeb.Repository.Identity.Contexts;
+using StoreWeb.Repository.Identity.DataSeed;
+using Microsoft.AspNetCore.Identity;
+using StoreWeb.Core.Entities.Identity;
 
 namespace StoreWebApi.Helper
 {
@@ -16,11 +20,16 @@ namespace StoreWebApi.Helper
             var services = scope.ServiceProvider;
 
             var context = services.GetRequiredService<StoreDbContext>();
+            var identityDbContext = services.GetRequiredService<StoreIdentityDbContext>();
+            var userManager = services.GetRequiredService<UserManager<AppUser>>();
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
             try
             {
                 await context.Database.MigrateAsync();
-                await StoreDbContextSeed.SeedAsync(context); 
+                await StoreDbContextSeed.SeedAsync(context);
+                await identityDbContext.Database.MigrateAsync();
+                await StoreIdentityDbContextSeed.SeedAppUserAsync(userManager);
+
             }
             catch (Exception ex)
             {
@@ -31,6 +40,9 @@ namespace StoreWebApi.Helper
 
             //StoreDbContext context = new StoreDbContext();
             //context.Database.MigrateAsync(); // Update-DataBase
+
+            app.UseMiddleware<ExceptionMiddleWare>(); // Configure User-Defined MiddleWare
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -43,7 +55,6 @@ namespace StoreWebApi.Helper
 
             app.UseAuthorization();
 
-            app.UseMiddleware<ExceptionMiddleWare>(); // Configure User-Defined MiddleWare
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
 
