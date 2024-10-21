@@ -15,6 +15,8 @@ using StoreWeb.Services.Services.Cashes;
 using StoreWeb.Repository.Identity.Contexts;
 using StoreWeb.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using StoreWeb.Services.Services.Tokens;
+using StoreWeb.Services.Services.Users;
 
 namespace StoreWebApi.Helper
 {
@@ -79,6 +81,8 @@ namespace StoreWebApi.Helper
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<ICashService,CasheService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
             return services;
 
         }
