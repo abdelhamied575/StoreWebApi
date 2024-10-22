@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StoreWeb.Core.Dtos.Auth;
@@ -6,6 +8,7 @@ using StoreWeb.Core.Entities.Identity;
 using StoreWeb.Core.Services.Contract;
 using StoreWeb.Services.Services.Tokens;
 using StoreWebApi.Errors;
+using StoreWebApi.Extensions;
 using System.Security.Claims;
 
 namespace StoreWebApi.Controllers
@@ -16,12 +19,17 @@ namespace StoreWebApi.Controllers
         private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountsController(IUserService userService,UserManager<AppUser> userManager,ITokenService tokenService)
+        public AccountsController(IUserService userService,
+            UserManager<AppUser> userManager,
+            ITokenService tokenService,
+            IMapper mapper)
         {
             _userService = userService;
             _userManager = userManager;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
@@ -50,6 +58,7 @@ namespace StoreWebApi.Controllers
 
 
         [HttpGet("GetCurrentUser")]
+        [Authorize]
         public async Task <ActionResult<UserDto>> GetCurrentUser()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -67,6 +76,24 @@ namespace StoreWebApi.Controllers
                 Token = await _tokenService.CreateTokenAsync(user, _userManager)
 
             });
+
+             
+        }
+
+        
+        [HttpGet("Address")]
+        [Authorize]
+        public async Task <ActionResult<AddressDto>> GetCurrentUserAddress()
+        {
+            
+
+            var user= await _userManager.FindByEmailWithAddressAsync(User);
+
+            if (user is null) return BadRequest(new ApiErrorResponse( StatusCodes.Status400BadRequest));
+
+            var mappedAddress =  _mapper.Map<AddressDto>(user.Address);
+
+            return Ok(mappedAddress);
 
              
         }

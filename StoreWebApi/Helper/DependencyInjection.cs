@@ -20,6 +20,7 @@ using StoreWeb.Services.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using StoreWeb.Core.Mapping.Auth;
 
 namespace StoreWebApi.Helper
 {
@@ -95,6 +96,7 @@ namespace StoreWebApi.Helper
         {
             services.AddAutoMapper(M => M.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(M => M.AddProfile(new BasketProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new AuthProfile()));
 
             return services;
 
