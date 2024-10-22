@@ -97,6 +97,29 @@ namespace StoreWebApi.Controllers
 
              
         }
+        [HttpPut("Address")]
+        [Authorize]
+        public async Task <ActionResult<AddressDto>> UpdateCurrentUserAddress(AddressDto address)
+        {
+            
+
+            var user= await _userManager.FindByEmailWithAddressAsync(User);
+
+            if (user is null) return BadRequest(new ApiErrorResponse( StatusCodes.Status400BadRequest));
+
+            var mappedAddress = _mapper.Map<AddressDto, Address>(address);
+
+            mappedAddress.Id = user.Address.Id;
+
+            user.Address = mappedAddress;
+            
+            var result=await _userManager.UpdateAsync(user);    
+            if(!result.Succeeded) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+
+            return Ok(address);
+
+
+        }
 
 
 
