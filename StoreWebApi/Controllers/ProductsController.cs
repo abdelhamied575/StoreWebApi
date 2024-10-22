@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreWeb.Core.Dtos.Products;
 using StoreWeb.Core.Helper;
@@ -9,7 +10,7 @@ using StoreWebApi.Errors;
 
 namespace StoreWebApi.Controllers
 {
-    
+    [Authorize]
     public class ProductsController : BaseApiController
     {
         private readonly IProductService _productService;

@@ -17,6 +17,9 @@ using StoreWeb.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using StoreWeb.Services.Services.Tokens;
 using StoreWeb.Services.Services.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace StoreWebApi.Helper
 {
@@ -34,6 +37,7 @@ namespace StoreWebApi.Helper
             services.ConfigureInValidModelStateResponseService(configuration);
             services.AddRedisService(configuration);
             services.AddIdentityService();
+            services.AddAuthenticationService(configuration);
 
             return services;
 
@@ -144,6 +148,29 @@ namespace StoreWebApi.Helper
         {
             services.AddIdentity<AppUser,IdentityRole>()
                     .AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+            return services;
+
+        }
+        private static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                };
+            });
 
             return services;
 

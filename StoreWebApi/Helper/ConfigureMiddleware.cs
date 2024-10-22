@@ -53,8 +53,9 @@ namespace StoreWebApi.Helper
             app.UseStaticFiles();
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
+            
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
 
