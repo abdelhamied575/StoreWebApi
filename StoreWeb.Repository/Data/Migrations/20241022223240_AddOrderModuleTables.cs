@@ -18,7 +18,7 @@ namespace StoreWeb.Repository.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ShortName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dscription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -65,8 +65,8 @@ namespace StoreWeb.Repository.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Product_ProductId = table.Column<int>(type: "int", nullable: false),
-                    Product_ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Product_PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Product_ProductName = table.Column<int>(type: "int", nullable: false),
+                    Product_PictureUrl = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: true),

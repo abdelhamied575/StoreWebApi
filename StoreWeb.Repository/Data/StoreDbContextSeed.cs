@@ -1,4 +1,5 @@
 ﻿using StoreWeb.Core.Entities;
+using StoreWeb.Core.Entities.Order;
 using StoreWeb.Repository.Data.Contexts;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,23 @@ namespace StoreWeb.Repository.Data
                 if (products is not null && products.Count() > 0)
                 {
                     await _context.Products.AddRangeAsync(products);
+                    await _context.SaveChangesAsync();
+                }
+
+            }
+
+
+            // Delivery Methods
+            if (_context.DeliveryMethods.Count() == 0)
+            {
+                // 1. Read Data From Json File
+                var DeliveryMethodsData = File.ReadAllText(@"..\StoreWeb.Repository\Data\DataSeed\delivery.json");
+                // 2. Convert Json String To List<>
+                var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodsData);
+                // 3. Send Data To DB
+                if (DeliveryMethods is not null)
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(DeliveryMethods);
                     await _context.SaveChangesAsync();
                 }
 

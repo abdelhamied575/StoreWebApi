@@ -12,7 +12,7 @@ using StoreWeb.Repository.Data.Contexts;
 namespace StoreWeb.Repository.Data.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20241022212552_AddOrderModuleTables")]
+    [Migration("20241022223240_AddOrderModuleTables")]
     partial class AddOrderModuleTables
     {
         /// <inheritdoc />
@@ -43,7 +43,7 @@ namespace StoreWeb.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Dscription")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -262,16 +262,14 @@ namespace StoreWeb.Repository.Data.Migrations
                             b1.Property<int>("OrderItemId")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("PictureUrl")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                            b1.Property<int>("PictureUrl")
+                                .HasColumnType("int");
 
                             b1.Property<int>("ProductId")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("ProductName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                            b1.Property<int>("ProductName")
+                                .HasColumnType("int");
 
                             b1.HasKey("OrderItemId");
 
