@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoreWeb.Core.Dtos.Products;
 using StoreWeb.Core.Helper;
 using StoreWeb.Core.Services.Contract;
 using StoreWeb.Core.Specifications.Products;
+using StoreWebApi.Attributes;
+using StoreWebApi.Errors;
 
 namespace StoreWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductsController : ControllerBase
+    [Authorize]
+    public class ProductsController : BaseApiController
     {
         private readonly IProductService _productService;
 
@@ -19,9 +21,13 @@ namespace StoreWebApi.Controllers
         }
 
 
+        [ProducesResponseType(typeof(PaginationResponse<ProductDto>), StatusCodes.Status200OK)]
         [HttpGet] // BaseUrl/api/Products
-        public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecParams productSpec ) // EndPoint
+        [Cashed(100)]
+        public async Task<ActionResult<PaginationResponse<ProductDto>>> GetAllProducts([FromQuery] ProductSpecParams productSpec ) // EndPoint
         {
+
+
             var result = await _productService.GetAllProductAsync(productSpec);
 
             //return Ok(new PaginationResponse<ProductDto>(productSpec.PageSize,productSpec.PageIndex,0,result));
@@ -31,9 +37,10 @@ namespace StoreWebApi.Controllers
 
 
 
+        [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         [HttpGet("brands")] // BaseUrl/api/Products
         //[Route("api/[controller]/Brands")]
-        public async Task<IActionResult> GetAllBrands() // EndPoint
+        public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllBrands() // EndPoint
         {
             var result = await _productService.GetAllBrandsAsync();
 
@@ -41,9 +48,9 @@ namespace StoreWebApi.Controllers
 
         }
 
+        [ProducesResponseType(typeof(IEnumerable<TypeBrandDto>), StatusCodes.Status200OK)]
         [HttpGet("types")] // BaseUrl/api/Products
-        //[Route("api/[controller]/Brands")]
-        public async Task<IActionResult> GetAllTypes() // EndPoint
+        public async Task<ActionResult<IEnumerable<TypeBrandDto>>> GetAllTypes() // EndPoint
         {
             var result = await _productService.GetAllTypesAsync();
 
@@ -52,17 +59,19 @@ namespace StoreWebApi.Controllers
         }
 
 
-
-        [HttpGet("{id}")] // BaseUrl/api/Products
-        public async Task<IActionResult> GetProductById(int? id) // EndPoint
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")] // BaseUrl/api/Products/1
+        public async Task<ActionResult<ProductDto>> GetProductById(int? id) // EndPoint
         {
-            if (id is null) return BadRequest("Invalid id !!");
+            if (id is null) return BadRequest(new ApiErrorResponse(400));
 
             var result = await _productService.GetProductByIdAsync(id.Value);
 
-            if (result is null) return NotFound($"The Product With Id :{id} Not Found At DataBase");
+            if (result is null) return NotFound(new ApiErrorResponse(404, $"The Product With Id :{id} Not Found At DataBase" ));
 
-            return Ok(result);
+            return Ok(result); 
 
         }
 
