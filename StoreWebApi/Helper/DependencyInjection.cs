@@ -21,6 +21,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StoreWeb.Core.Mapping.Auth;
+using StoreWeb.Core.Mapping.Orders;
+using StoreWeb.Services.Services.Orders;
+using StoreWeb.Services.Services.Baskets;
 
 namespace StoreWebApi.Helper
 {
@@ -88,6 +91,8 @@ namespace StoreWebApi.Helper
             services.AddScoped<ICashService,CasheService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBasketService, BasketService>();
             return services;
 
         }
@@ -97,6 +102,7 @@ namespace StoreWebApi.Helper
             services.AddAutoMapper(M => M.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(M => M.AddProfile(new BasketProfile()));
             services.AddAutoMapper(M => M.AddProfile(new AuthProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new OrderProfile(configuration)));
 
             return services;
 
