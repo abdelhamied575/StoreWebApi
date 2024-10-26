@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreWeb.Core;
 using StoreWeb.Core.Dtos.Orders;
 using StoreWeb.Core.Entities.Order;
 using StoreWeb.Core.Services.Contract;
@@ -15,11 +16,15 @@ namespace StoreWebApi.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrdersController(IOrderService orderService,IMapper mapper )
+        public OrdersController(IOrderService orderService,
+                                IMapper mapper,
+                                IUnitOfWork unitOfWork)
         {
             _orderService = orderService;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -65,6 +70,7 @@ namespace StoreWebApi.Controllers
 
         }
 
+
         [Authorize]
         [HttpGet("{orderId}")]
         public async Task <ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersForSpecificUser(int orderId)
@@ -83,8 +89,15 @@ namespace StoreWebApi.Controllers
         }
 
 
+        [HttpGet("DeliveryMethods")]
+        public async Task <IActionResult> GetDeliveryMethods()
+        {
+            var deliveryMethods= await _unitOfWork.Repository<DeliveryMethod,int>().GetAllAsync();
 
-
+            if(deliveryMethods is null) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+             
+            return Ok(deliveryMethods);
+        }
 
 
 
