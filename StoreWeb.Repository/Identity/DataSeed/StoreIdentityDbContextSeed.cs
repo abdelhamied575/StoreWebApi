@@ -25,8 +25,8 @@ namespace StoreWeb.Repository.Identity.DataSeed
                     PhoneNumber = "01026420147",
                     Address = new Address()
                     {
-                        FName = "Abdelhamied",
-                        LName = "Belal",
+                        FirstName = "Abdelhamied",
+                        LastName = "Belal",
                         City = "Cairo",
                         Country = "Egypt",
                         Street = "Eltyran"

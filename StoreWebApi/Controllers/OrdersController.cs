@@ -48,8 +48,39 @@ namespace StoreWebApi.Controllers
         }
 
 
+        [Authorize]
+        [HttpGet]
+        public async Task <ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersForSpecificUser()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (userEmail is null) return Unauthorized(new ApiErrorResponse(StatusCodes.Status401Unauthorized));
 
 
+            var orders = await  _orderService.GetOrdersForSpecificUserAsync(userEmail);
+
+            if(orders is null) return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest));
+
+            return Ok(_mapper.Map<IEnumerable<OrderToReturnDto>>(orders) );
+
+        }
+
+        [Authorize]
+        [HttpGet("{orderId}")]
+        public async Task <ActionResult<IEnumerable<OrderToReturnDto>>> GetOrdersForSpecificUser(int orderId)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (userEmail is null) return Unauthorized(new ApiErrorResponse(StatusCodes.Status401Unauthorized));
+
+
+            var order = await  _orderService.GetOrderByIdForSpecificUserAsync(userEmail, orderId);
+
+            if(order is null) return NotFound(new ApiErrorResponse(StatusCodes.Status404NotFound));
+
+            return Ok(_mapper.Map<OrderToReturnDto>(order));
+
+        }
 
 
 
