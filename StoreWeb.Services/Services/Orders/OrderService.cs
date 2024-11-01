@@ -15,11 +15,13 @@ namespace StoreWeb.Services.Services.Orders
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBasketService _basketService;
+        private readonly IPaymentService _paymentService;
 
-        public OrderService(IUnitOfWork unitOfWork,IBasketService basketService)
+        public OrderService(IUnitOfWork unitOfWork,IBasketService basketService,IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _basketService = basketService;
+            _paymentService = paymentService;
         }
 
 
@@ -51,7 +53,24 @@ namespace StoreWeb.Services.Services.Orders
 
             var subTotal=orderItems.Sum(I=>I.Price*I.Quantity);
 
-            var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal, "");
+            // TODO
+
+            if(!string.IsNullOrEmpty(basket.PaymentIntentId))
+            {
+                var spec = new OrderSpecificationsWithPaymentIntentId(basket.PaymentIntentId);
+                var ExOrder = await _unitOfWork.Repository<Order, int>().GetWithSpecAsync(spec);
+
+                _unitOfWork.Repository<Order, int>().Delete(ExOrder);
+
+            }
+
+
+
+            var basketDto= await _paymentService.CreateOrUpdatePaymentIntentIdAsync(basketId);
+
+            //if (basketDto is null) return null;
+
+            var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, subTotal, basketDto.PaymentIntentId);
 
             await _unitOfWork.Repository<Order,int>().AddAsync(order);
 

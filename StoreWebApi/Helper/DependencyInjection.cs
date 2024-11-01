@@ -24,6 +24,7 @@ using StoreWeb.Core.Mapping.Auth;
 using StoreWeb.Core.Mapping.Orders;
 using StoreWeb.Services.Services.Orders;
 using StoreWeb.Services.Services.Baskets;
+using StoreWeb.Services.Services.Payments;
 
 namespace StoreWebApi.Helper
 {
@@ -93,6 +94,7 @@ namespace StoreWebApi.Helper
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             return services;
 
         }
