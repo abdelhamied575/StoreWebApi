@@ -164,6 +164,17 @@ namespace StoreWebApi.Helper
         }
         private static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
         {
+
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 6;
+            }).AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

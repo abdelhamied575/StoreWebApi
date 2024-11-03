@@ -31,6 +31,7 @@ namespace StoreWeb.Repository.Identity.DataSeed
                         Country = "Egypt",
                         Street = "Eltyran"
                     }
+                    
                 };
 
 

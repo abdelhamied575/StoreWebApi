@@ -19,9 +19,10 @@ namespace StoreWeb.Core.Mapping.Products
                 .ForMember(D=>D.BrandName,options=>options.MapFrom(S=>S.Brand.Name))
                 .ForMember(D=>D.TypeName,options=>options.MapFrom(S=>S.Type.Name))
                 //.ForMember(D => D.PictureUrl, options => options.MapFrom(S => $"{configuration["BaseURL"]}{S.PictureUrl}"))
-                .ForMember(D => D.PictureUrl, options => options.MapFrom(new PictureUrlResolver(configuration)))
+                .ForMember(D => D.PictureUrl, options => options.MapFrom(new PictureUrlResolver(configuration))).ReverseMap()
                 ;
 
+            
 
             CreateMap<ProductBrand, TypeBrandDto>();
             CreateMap<ProductType, TypeBrandDto>();
