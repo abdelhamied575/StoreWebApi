@@ -48,7 +48,6 @@ namespace AdminDashboard.Controllers
 
         }
 
-        [HttpPost]
         public async Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
